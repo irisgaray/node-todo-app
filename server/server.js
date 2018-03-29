@@ -20,7 +20,7 @@ app.post('/todos', (req, res) => {
             res.status(200).send(doc);
         })
         .catch(error => {
-            res.status(404).send(error);
+            res.status(400).send(error);
         });
 
 });
@@ -29,3 +29,7 @@ app.post('/todos', (req, res) => {
 app.listen(3000, () => {
     console.log(`Started on port 3000`);
 });
+
+module.exports = {
+    app
+}

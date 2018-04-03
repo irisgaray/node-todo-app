@@ -79,8 +79,8 @@ app.delete('/todos/:id', (req, res) => {
             return res.status(404).send('Document does not exist');
         }
         //sucess 200
-        console.log('Removed Document: ', todo);
-        res.status(200).send(todo);
+        // console.log('Removed Document: ', todo);
+        res.status(200).send({todo});
     })
     .catch(error => {
         res.status(404).send(error);

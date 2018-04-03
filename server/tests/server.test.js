@@ -1,12 +1,13 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
-const { app } = require('./../server');
-const { Todo } = require('../models/todo');
+const {app} = require('./../server');
+const {Todo} = require('../models/todo');
 
 const dummyTodos = [ // creates dummy data for the DB
-    { text: "First test todo" },
-    { text: "Second test todo" },
+    { _id: new ObjectID(), text: "First test todo" },
+    { _id: new ObjectID(), text: "Second test todo" },
 ];
 
 beforeEach((done) => { // deleting all the data from DB before executes each test
@@ -63,7 +64,7 @@ describe('POST / todos', () => {
 });
 
 describe('GET /Todos', () => {
-    it('should get all Todos', (done) => {
+    it('should get all Todos', done => {
         request(app)
         .get('/todos')
         .expect(200)
@@ -72,4 +73,34 @@ describe('GET /Todos', () => {
         })
         .end(done); // there is no need on pass done as function because this is not an assynchronous test
     });
+});
+
+describe('GET /Todos/:id', () => {
+  it('should return a todo doc', (done) => {
+    request(app)
+      .get(`/todos/${dummyTodos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect(res => {
+          // todo is the object that was sent from findById() method
+          // res.status(200).send({todo});
+          expect(res.body.todo.text).toBe(dummyTodos[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if todo not found', (done) => {
+    request(app)
+      .get(`/todos/${new ObjectID().toHexString()}`)
+      .expect(404) // No need of doing a custome expect method
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get(`/todos/123abc`)
+    //   .get(`/todos/${{}}`) // is also valid, because the id format is validate in the find method
+      .expect(404) // No need of doing a custome expect method
+      .end(done);
+  });
+
 });

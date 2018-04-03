@@ -7,9 +7,7 @@ let db = {
 
 mongoose.Promise = global.Promise; // setting up mongoose to use promises
 // mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp'); // TodoApp is the name of the DB
-mongoose.connect(process.env.MONGOLAB_URI ? db.mlab : db.localhost); // TodoApp is the name of the DB
-
-// console.log(mongoose); // exports an object
+mongoose.connect(process.env.MONGOLAB_URI ? db.mlab : db.localhost); // heroku config:set MONGOLAB_URI=mongodb://user:password@ds131119.mlab.com:31119/node-mongoose-app
 
 module.exports = {
     mongoose

@@ -6,8 +6,8 @@ let db = {
 }
 
 mongoose.Promise = global.Promise; // setting up mongoose to use promises
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp'); // TodoApp is the name of the DB
-// mongoose.connect(process.env.PORT ? db.localhost : db.mlab); // TodoApp is the name of the DB
+// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp'); // TodoApp is the name of the DB
+mongoose.connect(process.env.PORT ? db.mlab : db.localhost); // TodoApp is the name of the DB
 
 // console.log(mongoose); // exports an object
 

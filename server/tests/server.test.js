@@ -6,8 +6,16 @@ const {app} = require('./../server');
 const {Todo} = require('../models/todo');
 
 const dummyTodos = [ // creates dummy data for the DB
-    { _id: new ObjectID(), text: "First test todo" },
-    { _id: new ObjectID(), text: "Second test todo" },
+  {
+    _id: new ObjectID(), 
+    text: "First test todo" 
+  },
+  {
+    _id: new ObjectID(), 
+    text: "Second test todo", 
+    completed: true, 
+    completedAt: 333 
+  },
 ];
 
 beforeEach((done) => { // deleting all the data from DB before executes each test
@@ -148,6 +156,52 @@ describe('DELETE Todos/:id', () => {
       .expect(404)
       .end(done);
   });
+
+describe('PATCH /todos/:id', () => {
+  it('should update the todo', done => {
+    
+    let id = dummyTodos[0]._id.toHexString();
+    let text = 'Updated from Mocha!';
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({
+          completed: true, 
+          //text: text (shorter version using js6)
+          text
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.completed).toBe(true);
+        expect(res.body.todo.text).toBe(text);
+        // expect(res.body.todo.completedAt).toBeTruthy();
+        expect(typeof res.body.todo.completedAt).toBe('number');        
+      })
+      .end(done);
+
+  });
+
+  it('should clear completedAt when todo is not completed', done => {
+    
+    let id = dummyTodos[1]._id.toHexString();
+    let text = 'Updated during unit test';
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({
+        completed: false,
+        text
+      })
+      .expect(200)
+      .expect(res => {
+          expect(res.body.todo.text).toBe(text);
+          expect(res.body.todo.completed).toBe(false);
+          expect(res.body.todo.completedAt).toBeNull();
+      })
+      .end(done);
+    
+  });
+})
 
 
 });
